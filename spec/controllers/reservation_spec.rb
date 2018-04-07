@@ -12,7 +12,8 @@ RSpec.describe Reservation, type: :request do
   let(:valid_attributes) {
      {
        "server" => "QA01",
-       "reserver" => "FREE"
+       "reserver" => "FREE",
+       "purpose" => "none"
      }
    }
    let(:invalid_server) {
@@ -21,10 +22,16 @@ RSpec.describe Reservation, type: :request do
        "text" => "InvalidServer"
      }
    }
-   let(:valid_reservation) {
+   let(:invalid_purpose) {
      {
        "token" => "RealToken",
        "text" => "QA01"
+     }
+   }
+   let(:valid_reservation) {
+     {
+       "token" => "RealToken",
+       "text" => "QA01 WEB-123 new feature"
      }
    }
    let(:valid_unreservation) {
@@ -79,7 +86,7 @@ RSpec.describe Reservation, type: :request do
         json = JSON.parse(response.body)
 
         expect(json['status']).to eq(200)
-        expect(json['text']).to eq("You have reserved QA01.")
+        expect(json['text']).to eq("You have reserved QA01 (WEB-123 new feature).")
       end
     end
 
@@ -92,6 +99,18 @@ RSpec.describe Reservation, type: :request do
 
         expect(json['status']).to eq(200)
         expect(json['text']).to eq('The InvalidServer server does not exist.')
+      end
+    end
+
+    context 'an invalid purpose' do
+      it 'returns an error message' do
+        server = Reservation.create! valid_attributes
+
+        post '/servers/reserve', params: invalid_purpose
+        json = JSON.parse(response.body)
+
+        expect(json['status']).to eq(200)
+        expect(json['text']).to eq("Please provide a purpose for this reservation.\nA valid example would be: `/reserve QA01 WEB-199 admin events page`")
       end
     end
 

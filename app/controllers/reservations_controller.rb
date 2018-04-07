@@ -38,16 +38,21 @@ class ReservationsController < ApplicationController
 
     input_text = params[:text].split(' ')
     desired_server = input_text[0]
+    desired_purpose = input_text[1..-1].join(' ')
     current_res = Reservation.where(server: desired_server).take
 
     if current_res.nil?
       message_text = "The #{desired_server} server does not exist."
     elsif current_res.reserver != "FREE"
       message_text = "The #{desired_server} server is already reserved."
+    elsif desired_purpose == ""
+      message_text = "Please provide a purpose for this reservation."
+      message_text << "\nA valid example would be: `/reserve QA01 WEB-199 admin events page`"
     else
       current_res.reserver = params[:user_id]
+      current_res.purpose = desired_purpose
       current_res.save
-      message_text = "You have reserved #{desired_server}."
+      message_text = "You have reserved #{desired_server} (#{desired_purpose})."
     end
 
     render json: { status: 200, response_type: "in_channel", text: message_text }
@@ -67,6 +72,7 @@ class ReservationsController < ApplicationController
       message_text = "The #{params[:text]} server is already unreserved."
     else
       current_res.reserver = "FREE"
+      current_res.purpose = "none"
       current_res.save
       message_text = "You have unreserved #{params[:text]}."
     end
