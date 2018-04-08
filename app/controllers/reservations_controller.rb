@@ -1,9 +1,13 @@
 class ReservationsController < ApplicationController
   def setup
-    setup = Reservation.create(server: "QA01", reserver: "FREE")
-    setup = Reservation.create(server: "QA02", reserver: "FREE")
-    setup = Reservation.create(server: "QA03", reserver: "FREE")
-    setup = Reservation.create(server: "QA04", reserver: "FREE")
+    Reservation.create(server: "beta", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "rails5", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "integration01", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "api-integration", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "QA01", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "QA02", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "QA03", reserver: "FREE", purpose: "none")
+    Reservation.create(server: "staging", reserver: "FREE", purpose: "none")
   end
 
   def cleanup
