@@ -14,6 +14,21 @@ class ReservationsController < ApplicationController
     Reservation.delete_all
   end
 
+  def tweak
+    current_res = Reservation.where(server: "integration01").take
+    current_res.server ="integration"
+    current_res.save
+    current_res = Reservation.where(server: "QA01").take
+    current_res.server ="qa01"
+    current_res.save
+    current_res = Reservation.where(server: "QA02").take
+    current_res.server ="qa02"
+    current_res.save
+    current_res = Reservation.where(server: "QA03").take
+    current_res.server ="qa03"
+    current_res.save
+  end
+
   def show
     if params[:token] != ENV['TOKEN']
       render json: { status: 401, text: 'Could not validate token.' }
